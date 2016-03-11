@@ -28,7 +28,7 @@ run_scp_edit(){
     sed -i "s#$cluster_dest#$curr#" exp/data-fmllr-tri4/*/feats.scp
 
 }
-run_scp_edit
+#run_scp_edit
 
 
 run_mfcc(){
@@ -163,6 +163,14 @@ decode_tri4(){
 }
 #decode_tri4
 
+    steps/align_fmllr.sh --nj 40 --cmd "$train_cmd" \
+      data/train_nodup data/lang exp/tri4 exp/tri4_ali_nodup
+
+    steps/align_fmllr.sh --nj 40 --cmd "$train_cmd" \
+      data/eval2000 data/lang exp/tri4 exp/tri4_ali_eval2000
+
+
+
 store_fmllr_feat(){
    # Store fMLLR features, so we can train on them easily,
 
@@ -235,5 +243,5 @@ run_dnn_decode(){
 
     log_end "DNN Decoding"
 }
-run_dnn_decode
+#run_dnn_decode
 
