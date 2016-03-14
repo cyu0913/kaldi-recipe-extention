@@ -58,7 +58,7 @@ run_lda_plda(){
     paste exp/score.dnn+trans/ivector_plda/plda.score $trials_key > exp/score.dnn+trans/ivector_plda/plda.score.key
     echo "SWBD PLDA EER : `compute-eer exp/score.dnn+trans/ivector_plda/plda.score.key 2> exp/score.dnn+trans/ivector_plda/plda_EER`"
 }
-run_lda_plda
+#run_lda_plda
 
 
 ###################################################### Call home speaker verification ################################################################
@@ -102,6 +102,6 @@ run_lda_plda(){
     paste exp/score.dnn+trans/ivector_plda/plda.score $trials_key > exp/score.dnn+trans/ivector_plda/plda.score.key
     echo "CALLHOME PLDA EER : `compute-eer exp/score.dnn+trans/ivector_plda/plda.score.key 2> exp/score.dnn+trans/ivector_plda/plda_EER`"
 }
-run_lda_plda
+#run_lda_plda
 
 

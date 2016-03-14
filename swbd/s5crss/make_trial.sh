@@ -18,7 +18,14 @@ log_end(){
 #set -e # exit on error
 
 mkdir -p exp/trials;
- 
+
+find_short(){
+
+    local/find_short_utt.sh `pwd`/data/eval2000/text `pwd`/exp/trials/utt_short
+
+}
+#find_short
+
 make_trial_swbd(){
  
          rm -f exp/trials/trial.swbd.utt2utt; rm -f exp/trials/trial.swbd.utt2utt.keys; rm -f exp/trials/trial.swbd.utt2utt.keys;
@@ -31,8 +38,10 @@ make_trial_swbd(){
 
                    exclude_i=`grep 'Did not' exp/tri4_ali_eval2000/log/* | awk '{print $8}' | awk -F',' '{print $1}' | egrep $i | uniq`
                    exclude_j=`grep 'Did not' exp/tri4_ali_eval2000/log/* | awk '{print $8}' | awk -F',' '{print $1}' | grep $j | uniq`
+                   exclude_i_short=`grep $i exp/trials/utt_short` 
+                   exclude_j_short=`grep $j exp/trials/utt_short` 
 
-                   if [ -z $exclude_i ] && [ -z $exclude_j ]; then
+                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ -z $exclude_i_short ] && [ -z $exclude_j_short ]; then
 
                            echo "$i $j" >> exp/trials/trial.swbd.utt2utt
 
@@ -61,8 +70,10 @@ make_trial_ch(){
 
                    exclude_i=`grep 'Did not' exp/tri4_ali_eval2000/log/align* | awk '{print $8}' | awk -F',' '{print $1}' | grep $i | uniq`
                    exclude_j=`grep 'Did not' exp/tri4_ali_eval2000/log/align* | awk '{print $8}' | awk -F',' '{print $1}' | grep $j | uniq`
+                   exclude_i_short=`grep $i exp/trials/utt_short` 
+                   exclude_j_short=`grep $j exp/trials/utt_short` 
 
-                   if [ -z $exclude_i ] && [ -z $exclude_j ]; then
+                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ -z $exclude_i_short ] && [ -z $exclude_j_short ]; then
 
 
                            echo "$i $j" >> exp/trials/trial.ch.utt2utt
