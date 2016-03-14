@@ -33,10 +33,10 @@ run_iv_extract(){
       --ivector-dim $ivdim --num-iters 5 exp/full_ubm_${ubmdim}/final.ubm data/train_nodup \
       exp/extractor_${ubmdim} || exit 1;
 
-   sid/extract_ivectors.sh --cmd "$train_cmd" --nj 80 --num-gselect 1 \
+   sid/extract_ivectors.sh --cmd "$train_cmd" --nj 80 --num-gselect 20 \
        exp/extractor_${ubmdim} data/train_nodup data/train_nodup.iv || exit 1;
 
-   sid/extract_ivectors.sh --cmd "$train_cmd" --nj 80 --num-gselect 1 \
+   sid/extract_ivectors.sh --cmd "$train_cmd" --nj 80 --num-gselect 20 \
         exp/extractor_${ubmdim} data/eval2000 data/eval2000.iv || exit 1;
 
 

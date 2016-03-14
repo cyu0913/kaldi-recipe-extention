@@ -153,21 +153,15 @@ decode_tri4(){
   graph_dir=exp/tri4/graph_sw1_tg
   $train_cmd $graph_dir/mkgraph.log \
     utils/mkgraph.sh data/lang_test exp/tri4 $graph_dir
-  steps/decode_fmllr.sh --nj 80 --cmd "$decode_cmd" \
+  steps/decode_fmllr.sh --nj 40 --cmd "$decode_cmd" \
     --config conf/decode.config \
     $graph_dir data/eval2000 exp/tri4/decode_eval2000_sw1_tg.text
 
-    steps/align_fmllr.sh --nj 80 --cmd "$train_cmd" \
+    steps/align_fmllr.sh --nj 40 --cmd "$train_cmd" \
       data/train_nodup data/lang exp/tri4 exp/tri4_ali_nodup
 
 }
 #decode_tri4
-
-    steps/align_fmllr.sh --nj 40 --cmd "$train_cmd" \
-      data/train_nodup data/lang exp/tri4 exp/tri4_ali_nodup
-
-    steps/align_fmllr.sh --nj 40 --cmd "$train_cmd" \
-      data/eval2000 data/lang exp/tri4 exp/tri4_ali_eval2000
 
 
 
