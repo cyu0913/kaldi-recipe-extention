@@ -13,6 +13,7 @@ cmd="run.pl"
 stage=-2
 delta_window=3
 delta_order=2
+min_post=0.025
 # End configuration section.
 
 echo "$0 $@"  # Print the command line for logging
@@ -81,7 +82,7 @@ num_components=`grep -oP -m 1 'output-dim\ \K[0-9]+' <(nnet-info $dnndir/final.n
 
 $cmd JOB=1:$nj $logdir/make_stats.JOB.log \
   nnet-forward --apply-log=true --prior-scale=1.0 --feature-transform=$dnndir/final.feature_transform $dnndir/final.nnet "$nnet_feats" ark:- \
-  \| logprob-to-post ark:- ark:- \| \
+  \| logprob-to-post --min-post=$min_post ark:- ark:- \| \
   fgmm-global-acc-stats-post ark:- $num_components "$feats" $dir/stats.JOB.acc || exit 1; 
 
 #$cmd JOB=1:$nj $logdir/make_post.JOB.log \

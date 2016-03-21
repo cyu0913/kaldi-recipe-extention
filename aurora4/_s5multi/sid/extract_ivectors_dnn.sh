@@ -81,7 +81,7 @@ if [ $stage -le 0 ]; then
 
   $cmd JOB=1:$nj $dir/log/extract_ivectors.JOB.log \
     nnet-forward --apply-log=true --prior-scale=1.0 --feature-transform=$dnndir/final.feature_transform $dnndir/final.nnet "$nnet_feats" ark:- \
-    \| logprob-to-post ark:- ark:- \| \
+    \| logprob-to-post --min-post=$min_post ark:- ark:- \| \
     scale-post ark:- $posterior_scale ark:- \| \
     ivector-extract --verbose=2 $srcdir/final.ie "$feats" ark,s,cs:- \
       ark,scp,t:$dir/ivector.JOB.ark,$dir/ivector.JOB.scp || exit 1;

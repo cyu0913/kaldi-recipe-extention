@@ -42,12 +42,12 @@ run_lda_plda(){
     mkdir -p exp/score.dnn/ivector_plda; rm -rf exp/score.dnn/ivector_plda/*
 
     ivector-compute-lda --dim=50 --total-covariance-factor=0.1 \
-        'ark:ivector-normalize-length scp:data/test_eval92.dnn-iv/ivector.scp ark:- |' \
-        ark:data/test_eval92/utt2spk \
+        'ark:ivector-normalize-length scp:data/train_si84_multi.dnn-iv/ivector.scp ark:- |' \
+        ark:data/train_si84_multi/utt2spk \
         exp/score.dnn/ivector_plda/lda_transform.mat 2> exp/score.dnn/ivector_plda/lda.log
 
-    ivector-compute-plda ark:data/test_eval92/spk2utt \
-          'ark:ivector-transform exp/score.dnn/ivector_plda/lda_transform.mat scp:data/test_eval92.dnn-iv/ivector.scp ark:- | ivector-normalize-length ark:-  ark:- |' \
+    ivector-compute-plda ark:data/train_si84_multi/spk2utt \
+          'ark:ivector-transform exp/score.dnn/ivector_plda/lda_transform.mat scp:data/train_si84_multi.dnn-iv/ivector.scp ark:- | ivector-normalize-length ark:-  ark:- |' \
             exp/score.dnn/ivector_plda/plda 2>exp/score.dnn/ivector_plda/plda.log
 
     ivector-plda-scoring  \
