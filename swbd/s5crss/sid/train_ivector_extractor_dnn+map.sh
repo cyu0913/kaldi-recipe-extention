@@ -4,7 +4,6 @@
 #      2014-2015  David Snyder
 #           2015  Johns Hopkins University (Author: Daniel Garcia-Romero)
 #           2015  Johns Hopkins University (Author: Daniel Povey)
-#            2016  Chengzhu Yu(UTDallas)
 # Apache 2.0.
 
 # This script trains the i-vector extractor using a DNN-based UBM. It also requires
@@ -93,10 +92,10 @@ done
 mkdir -p $dir/log
 nj_full=$[$nj*$num_processes]
 sdata=$data/split$nj_full;
-utils/split_data.sh --per-utt $data $nj_full || exit 1;
+utils/split_data.sh $data $nj_full || exit 1;
 
 sdata_dnn=$data_dnn/split$nj_full;
-utils/split_data.sh --per-utt $data_dnn $nj_full || exit 1;
+utils/split_data.sh $data_dnn $nj_full || exit 1;
 
 delta_opts=`cat $srcdir/delta_opts 2>/dev/null`
 if [ -f $srcdir/delta_opts ]; then
@@ -139,9 +138,9 @@ if [ $stage -le -1 ]; then
   #scale-post ark:- $posterior_scale "ark:|gzip -c >$dir/post.JOB.gz" || exit 1;
 
 $cmd JOB=1:$nj $dir/log/make_stats.JOB.log \
-  nnet-forward --apply-log=true --prior-scale=1.0 --feature-transform=$dnndir/final.feature_transform $dnndir/final.nnet "$nnet_feats" ark:- \
+  nnet-forward --apply-log=true --prior-scale=1.0 --feature-transform=$dnndir/final.feature_transform $dnndir/final.nnet scp:$sdata_dnn/JOB/feats.scp ark:- \
   \| logprob-to-post --min-post=0 ark:- ark:- \
-  \| post-ali-wsum-thr ark:- "$alignments" $scale "ark:|gzip -c >$dir/post.JOB.gz" || exit 1;
+  \| ali-to-post-map "$alignments" ark:- $mapdir/MAP.final $scale "ark:|gzip -c >$dir/post.JOB.gz" || exit 1;  
 
 else
   if ! [ $nj_full -eq $(cat $dir/num_jobs) ]; then

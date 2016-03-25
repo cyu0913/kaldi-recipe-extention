@@ -24,15 +24,17 @@ find_short(){
     local/find_short_utt.sh `pwd`/data/eval2000/text `pwd`/exp/trials/utt_short
 
 }
-#find_short
+find_short
 
 make_trial_swbd(){
  
          rm -f exp/trials/trial.swbd.utt2utt; rm -f exp/trials/trial.swbd.utt2utt.keys; rm -f exp/trials/trial.swbd.utt2utt.keys;
  
          # Check similarity of all i-vectors belong to two desired speakers. Code below compare speaker '01jo' vs '40po'   
-         for i in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'NR == 1 || NR % 3 == 0'`;do
-               for j in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'NR == 1 || NR % 5 == 0'`;do
+         #for i in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .2) print $0}'`;do
+         #      for j in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .05) print $0}' `;do
+            for i in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'NR == 1 || NR % 2 == 0' | head -200`;do
+               for j in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'NR == 1 || NR % 2 == 0' | head -200`;do
                    si=`echo $i | awk -F'-' '{print $1}' | awk -F'_' '{print $2 $3}'`
                    sj=`echo $j | awk -F'-' '{print $1}' | awk -F'_' '{print $2 $3}'`
 
@@ -41,7 +43,7 @@ make_trial_swbd(){
                    exclude_i_short=`grep $i exp/trials/utt_short` 
                    exclude_j_short=`grep $j exp/trials/utt_short` 
 
-                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ -z $exclude_i_short ] && [ -z $exclude_j_short ]; then
+                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ -z $exclude_i_short ] && [ -z $exclude_j_short ] && [ "$i" != "$j" ]; then
 
                            echo "$i $j" >> exp/trials/trial.swbd.utt2utt
 
@@ -56,15 +58,17 @@ make_trial_swbd(){
          done
  
 }
-#make_trial_swbd
+make_trial_swbd
 
 make_trial_ch(){
  
          rm -f exp/trials/trial.ch.utt2utt; rm -f exp/trials/trial.ch.utt2utt.keys; rm -f exp/trials/trial.ch.utt2utt.keys;
  
          # Check similarity of all i-vectors belong to two desired speakers. Code below compare speaker '01jo' vs '40po'   
-         for i in `cat data/eval2000.iv/ivector.scp | grep en | awk '{print $1}' | awk 'NR == 1 || NR % 3 == 0'`;do
-               for j in `cat data/eval2000.iv/ivector.scp | grep en | awk '{print $1}' | awk 'NR == 1 || NR % 5 == 0'`;do
+         #for i in `cat data/eval2000.iv/ivector.scp | grep en | awk '{print $1}' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .1) print $0}'`;do
+         #      for j in `cat data/eval2000.iv/ivector.scp | grep en | awk '{print $1}' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .1) print $0}'`;do
+         for i in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'NR == 1 || NR % 3 == 0'`;do
+               for j in `cat data/eval2000.iv/ivector.scp | grep sw | awk '{print $1}' | awk 'NR == 1 || NR % 5 == 0'`;do
                    si=`echo $i | awk -F'-' '{print $1}' | awk -F'_' '{print $2 $3}'`
                    sj=`echo $j | awk -F'-' '{print $1}' | awk -F'_' '{print $2 $3}'`
 
@@ -73,7 +77,7 @@ make_trial_ch(){
                    exclude_i_short=`grep $i exp/trials/utt_short` 
                    exclude_j_short=`grep $j exp/trials/utt_short` 
 
-                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ -z $exclude_i_short ] && [ -z $exclude_j_short ]; then
+                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ -z $exclude_i_short ] && [ -z $exclude_j_short ] && [ "$i" != "$j" ]; then
 
 
                            echo "$i $j" >> exp/trials/trial.ch.utt2utt

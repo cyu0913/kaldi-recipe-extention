@@ -55,7 +55,7 @@ if [ -f path.sh ]; then . ./path.sh; fi
 . parse_options.sh || exit 1;
 
 
-if [ $# != 7 ]; then
+if [ $# != 8 ]; then
   echo "Usage: $0 <fgmm-model> <dnn-model> <data-speaker-id> <data-dnn> <extractor-dir>"
   echo " e.g.: $0 exp/sup_ubm/final.ubm exp/dnn/final.mdl data/train data/train_dnn exp/extractor_male"
   echo "main options (for others, see top of script file)"
@@ -81,7 +81,8 @@ data=$3
 data_dnn=$4
 dir=$5
 alidir=$6
-scale=$7
+mapdir=$7
+scale=$8
 
 srcdir=$(dirname $fgmm_model)
 
@@ -140,8 +141,8 @@ if [ $stage -le -1 ]; then
 
 $cmd JOB=1:$nj $dir/log/make_stats.JOB.log \
   nnet-forward --apply-log=true --prior-scale=1.0 --feature-transform=$dnndir/final.feature_transform $dnndir/final.nnet "$nnet_feats" ark:- \
-  \| logprob-to-post --min-post=0 ark:- ark:- \
-  \| post-ali-wsum-thr ark:- "$alignments" $scale "ark:|gzip -c >$dir/post.JOB.gz" || exit 1;
+  \| logprob-to-post --min-post=0.001 ark:- ark:- \
+  \| ali-to-post-map "$alignments" ark:- $mapdir/MAP.final $scale "ark:|gzip -c >$dir/post.JOB.gz" || exit 1;
 
 else
   if ! [ $nj_full -eq $(cat $dir/num_jobs) ]; then

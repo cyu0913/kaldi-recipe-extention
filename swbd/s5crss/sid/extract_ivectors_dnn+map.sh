@@ -1,20 +1,20 @@
 #!/bin/bash
 
 # Copyright     2013  Daniel Povey
-#               2014  David Snyder
-#               2016  Chengzhu Yu          
+#          2014-2015  David Snyder
+#               2015  Johns Hopkins University (Author: Daniel Garcia-Romero)
+#               2015  Johns Hopkins University (Author: Daniel Povey)
 # Apache 2.0.
 
 # This script extracts iVectors for a set of utterances, given
-# features and a trained iVector extractor.
+# features and a trained DNN-based iVector extractor.
 
 # Begin configuration section.
 nj=30
 cmd="run.pl"
 stage=0
-num_gselect=20 # Gaussian-selection using diagonal model: number of Gaussians to select
 min_post=0.025 # Minimum posterior to use (posteriors below this are pruned out)
-posterior_scale=1 # This scale helps to control for successve features being highly
+posterior_scale=1.0 # This scale helps to control for successive features being highly
                     # correlated.  E.g. try 0.1 or 0.3.
 # End configuration section.
 
@@ -24,7 +24,7 @@ if [ -f path.sh ]; then . ./path.sh; fi
 . parse_options.sh || exit 1;
 
 
-if [ $# != 4 ]; then
+if [ $# != 7 ]; then
   echo "Usage: $0 <extractor-dir> <data> <ivector-dir>"
   echo " e.g.: $0 exp/extractor_2048_male data/train_male exp/ivectors_male"
   echo "main options (for others, see top of script file)"
@@ -41,9 +41,12 @@ if [ $# != 4 ]; then
 fi
 
 srcdir=$1
-data=$2
-alidir=$3
-dir=$4
+dnndir=$2
+data=$3
+data_dnn=$4
+dir=$5
+alidir=$6
+scale=$7
 
 for f in $srcdir/final.ie $srcdir/final.ubm $data/feats.scp ; do
   [ ! -f $f ] && echo "No such file $f" && exit 1;
@@ -54,28 +57,39 @@ mkdir -p $dir/log
 sdata=$data/split$nj;
 utils/split_data.sh $data $nj || exit 1;
 
+sdata_dnn=$data_dnn/split$nj;
+utils/split_data.sh $data_dnn $nj || exit 1;
+
 delta_opts=`cat $srcdir/delta_opts 2>/dev/null`
+
+splice_opts=`cat exp/nnet//splice_opts 2>/dev/null` # frame-splicing options           
 
 ## Set up features.
 #feats="ark,s,cs:add-deltas $delta_opts scp:$sdata/JOB/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- | select-voiced-frames ark:- scp,s,cs:$sdata/JOB/vad.scp ark:- |"
 feats="ark,s,cs:add-deltas $delta_opts scp:$sdata/JOB/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- |"
 
-#stat_posts="ark,s,cs:ali-to-pdf $alidir/final.mdl \"ark:gunzip -c $alidir/ali.JOB.gz|\"  ark:- | ali-to-post ark:- ark:-|"
-#$cmd JOB=1:$nj $dir/log/post.JOB.log \
-#     scale-post "$stat_posts" $posterior_scale "ark,t:|gzip -c >$dir/post.JOB.gz" || exit 1;
+#nnet_feats="ark,s,cs:apply-cmvn-sliding --center=true scp:$sdata_dnn/JOB/feats.scp ark:- |"
+nnet_feats="ark,s,cs:add-deltas $delta_opts scp:$sdata_dnn/JOB/feats.scp ark:-| apply-cmvn-sliding --norm-vars=true --center=true --cmn-window=300 ark:- ark:- |"
 
-$cmd JOB=1:$nj $dir/log/post.JOB.log \
-     ali-to-pdf $alidir/final.mdl "ark:gunzip -c $alidir/ali.JOB.gz|"  ark:- \
-     \| ali-to-post ark:- ark:- \| \
-     scale-post ark:- $posterior_scale "ark,t:|gzip -c >$dir/post.JOB.gz" || exit 1;
-
+alignments="ark,s,cs:ali-to-pdf $alidir/final.mdl \"ark:gunzip -c $alidir/ali.JOB.gz|\"  ark:- |"
 
 if [ $stage -le 0 ]; then
   echo "$0: extracting iVectors"
+  #$cmd JOB=1:$nj $dir/log/extract_ivectors.JOB.log \
+  #  nnet-am-compute --apply-log=true $nnet "$nnet_feats" ark:- \
+  #  \| select-voiced-frames ark:- scp,s,cs:$sdata/JOB/vad.scp ark:- \
+  #  \| logprob-to-post --min-post=$min_post ark:- ark:- \| \
+  #  scale-post ark:- $posterior_scale ark:- \| \
+  #  ivector-extract --verbose=2 $srcdir/final.ie "$feats" ark,s,cs:- \
+  #    ark,scp,t:$dir/ivector.JOB.ark,$dir/ivector.JOB.scp || exit 1;
 
-  $cmd JOB=1:$nj $dir/log/extract_ivectors.JOB.log \
-    ivector-extract --verbose=2 $srcdir/final.ie "$feats" "ark,s,cs:gunzip -c $dir/post.JOB.gz|" \
-      ark,scp,t:$dir/ivector.JOB.ark,$dir/ivector.JOB.scp || exit 1;
+  $cmd JOB=1:$nj $dir/log/make_stats.JOB.log \
+     nnet-forward --apply-log=true --prior-scale=1.0 --feature-transform=$dnndir/final.feature_transform $dnndir/final.nnet scp:$sdata_dnn/JOB/feats.scp ark:- \
+     \| logprob-to-post --min-post=0 ark:- ark:- \
+     \| ali-to-post-map "$alignments" ark:- $mapdir/MAP.final $scale ark:- \| \
+        ivector-extract --verbose=2 $srcdir/final.ie "$feats" ark,s,cs:- \
+        ark,scp,t:$dir/ivector.JOB.ark,$dir/ivector.JOB.scp || exit 1;
+
 fi
 
 if [ $stage -le 1 ]; then
@@ -90,5 +104,5 @@ if [ $stage -le 2 ]; then
   $cmd $dir/log/speaker_mean.log \
     ivector-normalize-length scp:$dir/ivector.scp  ark:- \| \
     ivector-mean ark:$data/spk2utt ark:- ark:- ark,t:$dir/num_utts.ark \| \
-    ivector-normalize-length ark:- ark,scp,t:$dir/spk_ivector.ark,$dir/spk_ivector.scp || exit 1;
+    ivector-normalize-length ark:- ark,scp:$dir/spk_ivector.ark,$dir/spk_ivector.scp || exit 1;
 fi

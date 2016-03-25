@@ -13,7 +13,6 @@ log_end(){
 }
 
 noise=$1
-snr=$2 
 
 . cmd.sh
 . path.sh 
@@ -30,8 +29,8 @@ run_cds_score(){
 
     cat $trials | awk '{print $1, $2}' | \
     ivector-compute-dot-products - \
-          scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp \
-          scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp \
           exp/score.dnn+trans/cds.output 2> exp/score.dnn+trans/cds.log
     awk '{print $3}' exp/score.dnn+trans/cds.output > exp/score.dnn+trans/cds.score
     paste exp/score.dnn+trans/cds.score $trials_key > exp/score.dnn+trans/cds.score.key
@@ -53,8 +52,8 @@ run_lda_plda(){
 
     ivector-plda-scoring  \
            "ivector-copy-plda --smoothing=0.0 exp/score.dnn+trans/ivector_plda/plda - |" \
-           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
-           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
            "cat '$trials' | awk '{print \$1, \$2}' |" exp/score.dnn+trans/ivector_plda/plda.output 2> exp/score.dnn+trans/ivector_plda/plda.log
 
     awk '{print $3}' exp/score.dnn+trans/ivector_plda/plda.output > exp/score.dnn+trans/ivector_plda/plda.score
@@ -65,7 +64,7 @@ run_lda_plda(){
 
 
 ###################################################### Call home speaker verification ################################################################
-mkdir -p exp/score.dnn+trans; rm -rf exp/score.dnn+trans/*
+#mkdir -p exp/score.dnn+trans; rm -rf exp/score.dnn+trans/*
 
 trials=exp/trials/trial.ch.utt2utt
 trials_key=exp/trials/trial.ch.utt2utt.keys
@@ -74,14 +73,14 @@ run_cds_score(){
 
     cat $trials | awk '{print $1, $2}' | \
           ivector-compute-dot-products - \
-          scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp \
-          scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp \
           exp/score.dnn+trans/cds.output 2> exp/score.dnn+trans/cds.log
     awk '{print $3}' exp/score.dnn+trans/cds.output > exp/score.dnn+trans/cds.score
     paste exp/score.dnn+trans/cds.score $trials_key > exp/score.dnn+trans/cds.score.key
     echo "CALLHOME CDS EER : `compute-eer exp/score.dnn+trans/cds.score.key 2> exp/score.dnn+trans/cds_EER`"
 }
-run_cds_score
+#run_cds_score
 
 run_lda_plda(){
     mkdir -p exp/score.dnn+trans/ivector_plda; rm -rf exp/score.dnn+trans/ivector_plda/*
@@ -97,8 +96,8 @@ run_lda_plda(){
 
     ivector-plda-scoring  \
            "ivector-copy-plda --smoothing=0.0 exp/score.dnn+trans/ivector_plda/plda - |" \
-           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
-           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.dnn+trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.dnn+trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
            "cat '$trials' | awk '{print \$1, \$2}' |" exp/score.dnn+trans/ivector_plda/plda.output 2> exp/score.dnn+trans/ivector_plda/plda.log
 
     awk '{print $3}' exp/score.dnn+trans/ivector_plda/plda.output > exp/score.dnn+trans/ivector_plda/plda.score

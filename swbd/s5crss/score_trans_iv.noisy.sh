@@ -13,7 +13,6 @@ log_end(){
 }
 
 noise=$1
-snr=$2 
 
 . cmd.sh
 . path.sh
@@ -30,8 +29,8 @@ run_cds_score(){
 
     cat $trials | awk '{print $1, $2}' | \
     ivector-compute-dot-products - \
-          scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp \
-          scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.trans-iv/ivector.scp \
           exp/score.trans/cds.output 2> exp/score.trans/cds.log
     awk '{print $3}' exp/score.trans/cds.output > exp/score.trans/cds.score
     paste exp/score.trans/cds.score $trials_key > exp/score.trans/cds.score.key
@@ -53,15 +52,15 @@ run_lda_plda(){
 
     ivector-plda-scoring  \
            "ivector-copy-plda --smoothing=0.0 exp/score.trans/ivector_plda/plda - |" \
-           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
-           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
            "cat '$trials' | awk '{print \$1, \$2}' |" exp/score.trans/ivector_plda/plda.output 2> exp/score.trans/ivector_plda/plda.log
 
     awk '{print $3}' exp/score.trans/ivector_plda/plda.output > exp/score.trans/ivector_plda/plda.score
     paste exp/score.trans/ivector_plda/plda.score $trials_key > exp/score.trans/ivector_plda/plda.score.key
     echo "SWBD PLDA EER : `compute-eer exp/score.trans/ivector_plda/plda.score.key 2> exp/score.trans/ivector_plda/plda_EER`"
 }
-run_lda_plda
+#run_lda_plda
 
 
 ###################################################### Call home speaker verification ################################################################
@@ -74,8 +73,8 @@ run_cds_score(){
 
     cat $trials | awk '{print $1, $2}' | \
           ivector-compute-dot-products - \
-          scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp \
-          scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.trans-iv/ivector.scp \
+          scp:data/eval2000_${noise}.trans-iv/ivector.scp \
           exp/score.trans/cds.output 2> exp/score.trans/cds.log
     awk '{print $3}' exp/score.trans/cds.output > exp/score.trans/cds.score
     paste exp/score.trans/cds.score $trials_key > exp/score.trans/cds.score.key
@@ -97,14 +96,14 @@ run_lda_plda(){
 
     ivector-plda-scoring  \
            "ivector-copy-plda --smoothing=0.0 exp/score.trans/ivector_plda/plda - |" \
-           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
-           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}_${snr}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/eval2000_${noise}.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
            "cat '$trials' | awk '{print \$1, \$2}' |" exp/score.trans/ivector_plda/plda.output 2> exp/score.trans/ivector_plda/plda.log
 
     awk '{print $3}' exp/score.trans/ivector_plda/plda.output > exp/score.trans/ivector_plda/plda.score
     paste exp/score.trans/ivector_plda/plda.score $trials_key > exp/score.trans/ivector_plda/plda.score.key
     echo "CALLHOME PLDA EER : `compute-eer exp/score.trans/ivector_plda/plda.score.key 2> exp/score.trans/ivector_plda/plda_EER`"
 }
-run_lda_plda
+#run_lda_plda
 
 

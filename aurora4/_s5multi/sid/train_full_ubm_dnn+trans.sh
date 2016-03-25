@@ -2,6 +2,7 @@
 # Copyright 2015   David Snyder
 #           2015   Johns Hopkins University (Author: Daniel Garcia-Romero)
 #           2015   Johns Hopkins University (Author: Daniel Povey)
+#           2016   Chengzhu Yu (UTDallas)     
 # Apache 2.0
 
 # This script derives a full-covariance UBM from DNN posteriors and
@@ -9,6 +10,7 @@
 
 # Begin configuration section.
 nj=40
+nj_for_map=8;
 cmd="run.pl"
 stage=-2
 delta_window=3

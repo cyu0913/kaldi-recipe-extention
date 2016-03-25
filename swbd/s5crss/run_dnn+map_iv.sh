@@ -23,19 +23,21 @@ ivdim=200
 run_dnn_iv_extract(){
    log_start "DNN Based Ivector Extraction"
 
-   scale=0.9
+   weight_org=0;
  
    #sid/train_full_ubm_dnn+trans.sh --nj 40 --cmd "$train_cmd_04" data/train_nodup exp/data-fmllr-tri4/train_nodup exp/dnn5b_pretrain-dbn_dnn exp/full_ubm_dnn+trans exp/tri4_ali_nodup $scale || exit 1;
 
-   sid/train_ivector_extractor_dnn+trans.sh --nj 40 --cmd "$train_cmd" \
+   sid/train_ali2dnn_map.sh --nj 40 --nj-for-map 20 --cmd "$train_cmd_05" exp/dnn5b_pretrain-dbn_dnn exp/data-fmllr-tri4/train_nodup exp/tri4_ali_nodup exp/mapping_ali2dnn || exit 1;
+
+   sid/train_ivector_extractor_dnn+map.sh --nj 40 --cmd "$train_cmd_05" \
         --ivector-dim $ivdim --num-iters 7 exp/full_ubm_dnn/final.ubm exp/dnn5b_pretrain-dbn_dnn data/train_nodup exp/data-fmllr-tri4/train_nodup \
-        exp/extractor_dnn+trans exp/tri4_ali_nodup $scale || exit 1;
+        exp/extractor_dnn+map exp/tri4_ali_nodup exp/mapping_ali2dnn $weight_org || exit 1;
 
-   sid/extract_ivectors_dnn+trans.sh --cmd "$train_cmd_05" --nj 40 \
-        exp/extractor_dnn+trans exp/dnn5b_pretrain-dbn_dnn data/eval2000 exp/data-fmllr-tri4/eval2000 data/eval2000.dnn+trans-iv exp/tri4_ali_eval2000 $scale || exit 1;
+   sid/extract_ivectors_dnn+map.sh --cmd "$train_cmd_05" --nj 40 \
+        exp/extractor_dnn+map exp/dnn5b_pretrain-dbn_dnn data/eval2000 exp/data-fmllr-tri4/eval2000 data/eval2000.dnn+trans-iv exp/tri4_ali_eval2000 exp/mapping_ali2dnn $weight_org || exit 1;
 
-   sid/extract_ivectors_dnn+trans.sh --cmd "$train_cmd_05" --nj 40 \
-        exp/extractor_dnn+trans exp/dnn5b_pretrain-dbn_dnn data/train_nodup exp/data-fmllr-tri4/train_nodup data/train_nodup.dnn+trans-iv exp/tri4_ali_nodup $scale || exit 1;
+   #sid/extract_ivectors_dnn+map.sh --cmd "$train_cmd_05" --nj 40 \
+   #     exp/extractor_dnn+map exp/dnn5b_pretrain-dbn_dnn data/train_nodup exp/data-fmllr-tri4/train_nodup data/train_nodup.dnn+trans-iv exp/tri4_ali_nodup exp/mapping_ali2dnn $weight_org || exit 1;
 
    log_end "DNN Based Ivector Extraction"
 }

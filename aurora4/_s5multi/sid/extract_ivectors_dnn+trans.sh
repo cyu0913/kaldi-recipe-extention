@@ -4,6 +4,7 @@
 #          2014-2015  David Snyder
 #               2015  Johns Hopkins University (Author: Daniel Garcia-Romero)
 #               2015  Johns Hopkins University (Author: Daniel Povey)
+#               2016  Chengzhu Yu (UTDallas)
 # Apache 2.0.
 
 # This script extracts iVectors for a set of utterances, given
