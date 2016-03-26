@@ -33,8 +33,11 @@ run_trans_iv_extract(){
    #sid/extract_ivectors_trans.sh --cmd "$train_cmd" --nj 80 \
    #     exp/extractor_trans data/test_eval92 exp/tri2b_multi_ali_eval92 data/test_eval92.trans-iv || exit 1;
 
-   sid/extract_ivectors_trans.sh --cmd "$train_cmd" --nj 40 \
-        exp/extractor_senones data/train_si84_multi exp/tri2b_multi_ali_si84 data/train_si84_multi.trans-iv || exit 1;
+   #sid/extract_ivectors_trans.sh --cmd "$train_cmd" --nj 40 \
+   #     exp/extractor_senones data/train_si84_multi exp/tri2b_multi_ali_si84 data/train_si84_multi.trans-iv || exit 1;
+
+   sid/extract_ivectors_trans.sh --cmd "$train_cmd" --nj 80 \
+        exp/extractor_senones data/dev_1206 exp/tri2b_multi_ali_dev_1206 data/dev_1206.trans-iv || exit 1;
 
    log_end "Transcript Based Ivector Extraction"
 }

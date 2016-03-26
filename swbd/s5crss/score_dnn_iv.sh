@@ -62,7 +62,6 @@ run_lda_plda(){
 
 
 ###################################################### Call home speaker verification ################################################################
-mkdir -p exp/score.dnn; rm -rf exp/score.dnn/*
 
 trials=exp/trials/trial.ch.utt2utt
 trials_key=exp/trials/trial.ch.utt2utt.keys
@@ -78,7 +77,7 @@ run_cds_score(){
     paste exp/score.dnn/cds.score $trials_key > exp/score.dnn/cds.score.key
     echo "CALLHOME CDS EER : `compute-eer exp/score.dnn/cds.score.key 2> exp/score.dnn/cds_EER`"
 }
-run_cds_score
+#run_cds_score
 
 run_lda_plda(){
     mkdir -p exp/score.dnn/ivector_plda; rm -rf exp/score.dnn/ivector_plda/*

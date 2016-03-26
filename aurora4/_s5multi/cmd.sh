@@ -28,6 +28,7 @@
 #d) run it on CRSS cluster
 export train_cmd="queue.pl -q all.q\@compute-0-6 -r y -cwd -V"
 export train_cmd_05="queue.pl -q all.q\@compute-0-5 -r y -cwd -V"
+export train_cmd_04="queue.pl -q all.q\@compute-0-4 -r y -cwd -V"
 export decode_cmd="queue.pl -q all.q\@compute-0-6 -r y -cwd -V"
 export mkgraph_cmd="queue.pl -q all.q\@compute-0-6 -r y -cwd -V"
 export cuda_cmd=run.pl

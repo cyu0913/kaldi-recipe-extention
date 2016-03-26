@@ -33,11 +33,11 @@ run_iv_extract(){
    #     --ivector-dim $ivdim --num-iters 6 exp/full_ubm_dnn+trans/final.ubm exp/tri3a_dnn data/train_si84_multi data-fbank/train_si84_multi \
    #     exp/extractor_dnn+map exp/tri2b_multi_ali_si84 exp/mapping_ali2dnn $weight_org || exit 1;
 
-   sid/extract_ivectors_dnn+map.sh --cmd "$train_cmd" --nj 80 \
-        exp/extractor_dnn+map exp/tri3a_dnn data/test_eval92 data-fbank/test_eval92 data/test_eval92.dnn+map-iv exp/tri2b_multi_ali_eval92 exp/mapping_ali2dnn $weight_org || exit 1;
-
    #sid/extract_ivectors_dnn+map.sh --cmd "$train_cmd" --nj 80 \
-   #     exp/extractor_dnn+map exp/tri3a_dnn data/dev_1206 data-fbank/dev_1206 data/dev_1206.dnn+map-iv exp/tri2b_multi_ali_dev_1206 exp/mapping_ali2dnn $weight_org || exit 1;
+   #     exp/extractor_dnn+map exp/tri3a_dnn data/test_eval92 data-fbank/test_eval92 data/test_eval92.dnn+map-iv exp/tri2b_multi_ali_eval92 exp/mapping_ali2dnn $weight_org || exit 1;
+
+   sid/extract_ivectors_dnn+map.sh --cmd "$train_cmd" --nj 80 \
+        exp/extractor_dnn+map exp/tri3a_dnn data/dev_1206 data-fbank/dev_1206 data/dev_1206.dnn+map-iv exp/tri2b_multi_ali_dev_1206 exp/mapping_ali2dnn $weight_org || exit 1;
 
    #sid/extract_ivectors_dnn+map.sh --cmd "$train_cmd" --nj 40 \
    #     exp/extractor_dnn+map exp/tri3a_dnn data/train_si84_multi data-fbank/train_si84_multi data/train_si84_multi.dnn+map-iv exp/tri2b_multi_ali_si84 exp/mapping_ali2dnn $weight_org || exit 1;

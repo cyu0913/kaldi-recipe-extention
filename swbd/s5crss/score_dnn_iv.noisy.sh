@@ -64,8 +64,6 @@ run_lda_plda(){
 
 
 ###################################################### Call home speaker verification ################################################################
-mkdir -p exp/score.dnn; rm -rf exp/score.dnn/*
-
 trials=exp/trials/trial.ch.utt2utt
 trials_key=exp/trials/trial.ch.utt2utt.keys
 

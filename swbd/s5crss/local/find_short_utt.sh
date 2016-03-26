@@ -10,7 +10,7 @@ do
 
     num_word=`echo $line | wc | awk '{print $2}'`
     
-    if [ $num_word -lt 10 ]; then
+    if [ $num_word -lt 5 ]; then
         echo $line | awk '{print $1}' >> $out_file
     fi
 done < $in_file
