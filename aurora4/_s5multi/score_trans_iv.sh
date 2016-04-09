@@ -29,8 +29,8 @@ run_cds_score_trans-IV(){
 
     cat $trials | awk '{print $1, $2}' | \
     ivector-compute-dot-products - \
-          scp:data/test_eval92.trans-iv/ivector.scp \
-          scp:data/test_eval92.trans-iv/ivector.scp \
+          scp:data/test+dev.trans-iv/ivector.scp \
+          scp:data/test+dev.trans-iv/ivector.scp \
           exp/score.trans/cds.output 2> exp/score.trans/cds.log
     awk '{print $3}' exp/score.trans/cds.output > exp/score.trans/cds.score
     paste exp/score.trans/cds.score $trials_key > exp/score.trans/cds.score.key
@@ -52,8 +52,8 @@ run_lda_plda(){
 
     ivector-plda-scoring  \
            "ivector-copy-plda --smoothing=0.0 exp/score.trans/ivector_plda/plda - |" \
-           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/test_eval92.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
-           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/test_eval92.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/test+dev.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
+           "ark:ivector-transform exp/score.trans/ivector_plda/lda_transform.mat scp:data/test+dev.trans-iv/ivector.scp ark:- | ivector-subtract-global-mean ark:- ark:- |" \
            "cat '$trials' | awk '{print \$1, \$2}' |" exp/score.trans/ivector_plda/plda.output 2> exp/score.trans/ivector_plda/plda.log
 
     awk '{print $3}' exp/score.trans/ivector_plda/plda.output > exp/score.trans/ivector_plda/plda.score

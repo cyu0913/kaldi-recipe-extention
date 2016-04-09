@@ -27,16 +27,17 @@ combine_iv(){
         local/combine_iv.sh data/test+dev.$mode data/test_eval92.$mode data/dev_1206.$mode data/test+dev data/test_eval92 data/dev_1206
     done
 } 
-combine_iv
+#combine_iv
 
 make_trial(){
  
 
          rm -f exp/trials/trial.utt2utt; rm -f exp/trials/trial.utt2utt.keys; rm -f exp/trials/trial.utt2utt.keys;
 
-         # Check similarity of all i-vectors belong to two desired speakers. Code below compare speaker '01jo' vs '40po'   
-         for i in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .2) print $0}'`;do
-               for j in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | awk 'BEGIN {srand()} !/^$/ { if (rand() <= .2) print $0}'`;do
+         # Create target trial, from test_eval92
+         for id in `cat data/test_eval92/spk2utt | awk '{print $1}'`;do
+            for i in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | grep "^$id" |  awk 'BEGIN {srand()} !/^$/ { if (rand() <= .2) print $0}'`;do
+               for j in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | grep "^$id" |  awk 'BEGIN {srand()} !/^$/ { if (rand() <= .2) print $0}'`;do
                    si=`grep $i data/test+dev/utt2spk | awk '{print $2}'`
                    sj=`grep $j data/test+dev/utt2spk | awk '{print $2}'`
 
@@ -57,12 +58,66 @@ make_trial(){
                            fi
                   fi
                done
+            done
+         done
+
+         # Create target trial, from dev_1206
+         for id in `cat data/dev_1206/spk2utt | awk '{print $1}'`;do
+            for i in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | grep "^$id" |  awk 'BEGIN {srand()} !/^$/ { if (rand() <= .01) print $0}'`;do
+               for j in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | grep "^$id" |  awk 'BEGIN {srand()} !/^$/ { if (rand() <= .01) print $0}'`;do
+                   si=`grep $i data/test+dev/utt2spk | awk '{print $2}'`
+                   sj=`grep $j data/test+dev/utt2spk | awk '{print $2}'`
+
+                   exclude_i=`grep 'Did not' exp/tri2b_multi_ali*/log/* | awk '{print $8}' | awk -F',' '{print $1}' | egrep $i `;     
+                   exclude_j=`grep 'Did not' exp/tri2b_multi_ali*/log/* | awk '{print $8}' | awk -F',' '{print $1}' | grep $j`; 
+
+                   repi=`echo $i | rev | cut -c 2- | rev`
+                   repj=`echo $j | rev | cut -c 2- | rev`
+
+                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ "$repi" != "$repj" ] && [ "$i" != "$j" ]; then     
+
+                           echo "$i $j" >> exp/trials/trial.utt2utt 
+ 
+                           if [ "$si" == "$sj" ]; then
+                              echo "target" >> exp/trials/trial.utt2utt.keys
+                           else
+                              echo "nontarget" >> exp/trials/trial.utt2utt.keys
+                           fi
+                  fi
+               done
+            done
+         done
+
+         for id in `cat data/test+dev/spk2utt | awk '{print $1}'`;do
+            for i in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | grep "^$id" |  awk 'BEGIN {srand()} !/^$/ { if (rand() <= .05) print $0}'`;do
+               for j in `cat data/test+dev.iv/ivector.scp | awk '{print $1}' | grep -v "^$id" |  awk 'BEGIN {srand()} !/^$/ { if (rand() <= .1) print $0}'`;do
+                   si=`grep $i data/test+dev/utt2spk | awk '{print $2}'`
+                   sj=`grep $j data/test+dev/utt2spk | awk '{print $2}'`
+
+                   exclude_i=`grep 'Did not' exp/tri2b_multi_ali*/log/* | awk '{print $8}' | awk -F',' '{print $1}' | egrep $i `;     
+                   exclude_j=`grep 'Did not' exp/tri2b_multi_ali*/log/* | awk '{print $8}' | awk -F',' '{print $1}' | grep $j`; 
+
+                   repi=`echo $i | rev | cut -c 2- | rev`
+                   repj=`echo $j | rev | cut -c 2- | rev`
+
+                   if [ -z $exclude_i ] && [ -z $exclude_j ] && [ "$repi" != "$repj" ] && [ "$i" != "$j" ]; then     
+
+                           echo "$i $j" >> exp/trials/trial.utt2utt 
+ 
+                           if [ "$si" == "$sj" ]; then
+                              echo "target" >> exp/trials/trial.utt2utt.keys
+                           else
+                              echo "nontarget" >> exp/trials/trial.utt2utt.keys
+                           fi
+                  fi
+               done
+            done
          done
  
 }
 make_trial
 
-make_trial_clean(){
+#make_trial_clean(){
  
          rm -f exp/trials/trial.utt2utt; rm -f exp/trials/trial.utt2utt.keys; rm -f exp/trials/trial.utt2utt.keys;
 

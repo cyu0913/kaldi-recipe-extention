@@ -14,3 +14,7 @@ cat $dir2/ivector.scp >> $dest_dir/ivector.scp
 mkdir -p $map_dir
 cat $mapdir1/utt2spk > $map_dir/utt2spk
 cat $mapdir2/utt2spk >> $map_dir/utt2spk
+
+cat $mapdir1/spk2utt > $map_dir/spk2utt
+cat $mapdir2/spk2utt >> $map_dir/spk2utt
+
