@@ -1,0 +1,14 @@
+# Running on compute-0-6.local
+# Started at Tue Mar 29 03:45:44 CDT 2016
+# ivector-normalize-length scp:data/eecom_nontarget.iv/ivector.scp ark:- | ivector-mean ark:data/eecom_spk_nontarget/spk2utt ark:- ark:- ark,t:data/eecom_nontarget.iv/num_utts.ark | ivector-normalize-length ark:- ark,scp:data/eecom_nontarget.iv/spk_ivector.ark,data/eecom_nontarget.iv/spk_ivector.scp 
+ivector-mean ark:data/eecom_spk_nontarget/spk2utt ark:- ark:- ark,t:data/eecom_nontarget.iv/num_utts.ark 
+ivector-normalize-length scp:data/eecom_nontarget.iv/ivector.scp ark:- 
+ivector-normalize-length ark:- ark,scp:data/eecom_nontarget.iv/spk_ivector.ark,data/eecom_nontarget.iv/spk_ivector.scp 
+LOG (ivector-normalize-length:main():ivector-normalize-length.cc:85) Processed 12 iVectors.
+LOG (ivector-normalize-length:main():ivector-normalize-length.cc:89) Average ratio of iVector to expected length was 0.732508, standard deviation was 0.0226252
+LOG (ivector-mean:main():ivector-mean.cc:134) Computed mean of 12 speakers (0 with no utterances), consisting of 12 utterances (0 absent from input).
+LOG (ivector-mean:main():ivector-mean.cc:145) Norm of mean of speakers is 17.8782, root-mean-square speaker-iVector length divided by sqrt(dim) is 1
+LOG (ivector-normalize-length:main():ivector-normalize-length.cc:85) Processed 12 iVectors.
+LOG (ivector-normalize-length:main():ivector-normalize-length.cc:89) Average ratio of iVector to expected length was 1, standard deviation was 0.000222869
+# Accounting: time=0 threads=1
+# Finished at Tue Mar 29 03:45:44 CDT 2016 with status 0

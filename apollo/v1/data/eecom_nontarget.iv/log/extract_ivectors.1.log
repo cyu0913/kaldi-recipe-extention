@@ -1,0 +1,54 @@
+# Running on compute-0-6.local
+# Started at Tue Mar 29 03:45:21 CDT 2016
+# gmm-gselect --n=20 "fgmm-global-to-gmm /erasable/cxy110530/exp_scratch/swbd/s5crss/exp/extractor_2048/final.ubm -|" "ark,s,cs:add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- |" ark:- | fgmm-global-gselect-to-post --min-post=0.025 /erasable/cxy110530/exp_scratch/swbd/s5crss/exp/extractor_2048/final.ubm "ark,s,cs:add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- |" ark,s,cs:- ark:- | scale-post ark:- 1.0 ark:- | ivector-extract --verbose=2 /erasable/cxy110530/exp_scratch/swbd/s5crss/exp/extractor_2048/final.ie "ark,s,cs:add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- |" ark,s,cs:- ark,scp,t:data/eecom_nontarget.iv/ivector.1.ark,data/eecom_nontarget.iv/ivector.1.scp 
+gmm-gselect --n=20 'fgmm-global-to-gmm /erasable/cxy110530/exp_scratch/swbd/s5crss/exp/extractor_2048/final.ubm -|' 'ark,s,cs:add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- |' ark:- 
+fgmm-global-gselect-to-post --min-post=0.025 /erasable/cxy110530/exp_scratch/swbd/s5crss/exp/extractor_2048/final.ubm 'ark,s,cs:add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- |' ark,s,cs:- ark:- 
+scale-post ark:- 1.0 ark:- 
+ivector-extract --verbose=2 /erasable/cxy110530/exp_scratch/swbd/s5crss/exp/extractor_2048/final.ie 'ark,s,cs:add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- | apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- |' ark,s,cs:- ark,scp,t:data/eecom_nontarget.iv/ivector.1.ark,data/eecom_nontarget.iv/ivector.1.scp 
+fgmm-global-to-gmm /erasable/cxy110530/exp_scratch/swbd/s5crss/exp/extractor_2048/final.ubm - 
+LOG (ivector-extract:ComputeDerivedVars():ivector-extractor.cc:180) Computing derived variables for iVector extractor
+add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- 
+apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- 
+LOG (fgmm-global-to-gmm:main():fgmm-global-to-gmm.cc:58) Written diagonal GMM to -
+apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- 
+add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- 
+LOG (gmm-gselect:main():gmm-gselect.cc:115) For 0'th file, average UBM likelihood over 3537 frames is -70.6068
+LOG (ivector-extract:ComputeDerivedVars():ivector-extractor.cc:201) Done.
+add-deltas --delta-window=3 --delta-order=2 scp:data/eecom_spk_nontarget/split1/1/feats.scp ark:- 
+apply-cmvn-sliding --norm-vars=false --center=true --cmn-window=300 ark:- ark:- 
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-01 was 10.2858 per frame over 3537 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-01 was 14.8287
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-02 was 9.86709 per frame over 3233 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-02 was 14.2917
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-03 was 10.4921 per frame over 3132 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-03 was 14.2116
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-04 was 10.0193 per frame over 4161 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-04 was 15.2147
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-05 was 10.5714 per frame over 2829 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-05 was 14.1316
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-06 was 10.1193 per frame over 3138 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-06 was 14.0623
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-07 was 10.5553 per frame over 4447 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-07 was 14.385
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-08 was 10.4311 per frame over 4851 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-08 was 15.1715
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-09 was 10.174 per frame over 4851 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-09 was 14.6023
+LOG (gmm-gselect:main():gmm-gselect.cc:115) For 10'th file, average UBM likelihood over 2526 frames is -71.7585
+LOG (apply-cmvn-sliding:main():apply-cmvn-sliding.cc:75) Applied sliding-window cepstral mean normalization to 12 utterances, 0 had errors.
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-10 was 10.0721 per frame over 4346 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-10 was 15.5502
+LOG (apply-cmvn-sliding:main():apply-cmvn-sliding.cc:75) Applied sliding-window cepstral mean normalization to 12 utterances, 0 had errors.
+LOG (gmm-gselect:main():gmm-gselect.cc:126) Done 12 files, 0 with errors, average UBM log-likelihood is -70.8584 over 44183 frames.
+LOG (apply-cmvn-sliding:main():apply-cmvn-sliding.cc:75) Applied sliding-window cepstral mean normalization to 12 utterances, 0 had errors.
+LOG (fgmm-global-gselect-to-post:main():fgmm-global-gselect-to-post.cc:148) Done 12 files; 0 had errors.
+LOG (fgmm-global-gselect-to-post:main():fgmm-global-gselect-to-post.cc:149) Overall loglike per frame is -66.9254 with 5.2883 entries per frame,  over 44183 frames
+LOG (scale-post:main():scale-post.cc:79) Done 12 posteriors;  0 had no scales.
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-11 was 9.56348 per frame over 2526 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-11 was 14.5883
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:68) Auxf change for utterance non-eecom-12 was 9.69852 per frame over 3132 frames (weighted)
+VLOG[2] (ivector-extract:~IvectorExtractTask():ivector-extract.cc:77) Ivector norm for utterance non-eecom-12 was 14.7642
+LOG (ivector-extract:main():ivector-extract.cc:314) Done 12 files, 0 with errors.  Total (weighted) frames 44183
+LOG (ivector-extract:main():ivector-extract.cc:317) Overall average objective-function change from estimating ivector was 10.178 per frame  over 44183 (weighted) frames.
+# Accounting: time=21 threads=1
+# Finished at Tue Mar 29 03:45:42 CDT 2016 with status 0
